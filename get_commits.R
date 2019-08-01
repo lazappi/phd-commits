@@ -1,4 +1,5 @@
-get_commits <- function(path, distinct = TRUE, filter = TRUE) {
+get_commits <- function(path, distinct = TRUE, filter = TRUE,
+                        from = "2016-02-08") {
     dirs <- fs::dir_ls(path, type = "directory")
 
     message("Searching ", length(dirs), " directories...")
@@ -29,6 +30,10 @@ get_commits <- function(path, distinct = TRUE, filter = TRUE) {
         commits <- dplyr::distinct(commits, SHA, .keep_all = TRUE)
         message("Found ", nrow(commits), " distinct commits")
     }
+
+    message("Filtering dates...")
+    commits <- dplyr::filter(commits, When >= from)
+    message("Found ", nrow(commits), " from ", from)
 
     if (filter) {
         message("Filtering names...")
