@@ -19,6 +19,16 @@ plot_commits <- function(commits, repositories) {
                            "Analysis", "Reports", "Other", "Side projects")))
         )
 
+    pal <- c(
+        "#00ADEF", # Blue
+        "#8DC63F", # Green
+        "#EC008C", # Pink
+        "#00B7C6", # Teal
+        "#7A52C7", # Purple
+        "#F47920", # Orange
+        "grey50"   # Grey
+    )
+
     ggplot2::ggplot(
         commits,
         ggplot2::aes(x = Category, y = When, colour = Category, shape = Type)
@@ -26,9 +36,13 @@ plot_commits <- function(commits, repositories) {
         ggplot2::geom_jitter(width = 0.2, height = 0, alpha = 0.8, size = 2) +
         ggplot2::scale_x_discrete(drop = FALSE) +
         ggplot2::scale_shape_manual(values = c(16, 1)) +
+        ggplot2::scale_colour_manual(values = rev(pal)) +
         ggplot2::coord_flip() +
         ggplot2::labs(
-            title = "Commits during my PhD!"
+            title = "A PhD in git commits",
+            subtitle = glue::glue(
+                "{nrow(commits)} commits in ",
+                "{length(unique(commits$Repository))} repositories")
         ) +
         ggplot2::theme_minimal() +
         ggplot2::theme(
