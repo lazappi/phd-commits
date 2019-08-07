@@ -3,7 +3,7 @@
 Functions for scraping git commits from repositories associated with a PhD (or
 anything else) and plotting them. The result looks something like this.
 
-![Commits GIF](phd-commits.gif)
+![Commits GIF](phd_commits.gif)
 
 ## How to use
 
