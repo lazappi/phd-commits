@@ -54,21 +54,28 @@ plot_commits <- function(commits, repositories) {
         commits,
         ggplot2::aes(x = Category, y = When, colour = Category, shape = Type)
     ) +
-        ggplot2::geom_jitter(width = 0.1, height = 0, alpha = 0.8, size = 2) +
+        ggplot2::geom_jitter(
+            aes(group = seq_along(SHA)),
+            width = 0.2, height = 0, alpha = 0.8, size = 2
+        ) +
         #ggplot2::geom_text(data = first_commits, aes(label = Repository),
         #                   vjust = -2) +
-        ggrepel::geom_text_repel(
-            data = first_commits_top,
-            aes(label = Repository, vjust = -vjust),
-            size = 3,
-            direction = "x"
-        ) +
-        ggrepel::geom_text_repel(
-            data = first_commits_bottom,
-            aes(label = Repository, vjust = vjust),
-            size = 3,
-            direction = "x"
-        ) +
+        # ggrepel::geom_text_repel(
+        #     data = first_commits_top,
+        #     aes(label = Repository, vjust = -vjust,
+        #         group = seq_len(nrow(first_commits_top))),
+        #     size = 3,
+        #     direction = "x",
+        #     show.legend = FALSE
+        # ) +
+        # ggrepel::geom_text_repel(
+        #     data = first_commits_bottom,
+        #     aes(label = Repository, vjust = vjust,
+        #         group = seq_len(nrow(first_commits_bottom))),
+        #     size = 3,
+        #     direction = "x",
+        #     show.legend = FALSE
+        # ) +
         ggplot2::scale_x_discrete(drop = FALSE) +
         ggplot2::scale_shape_manual(values = c(16, 1)) +
         ggplot2::scale_colour_manual(values = rev(pal)) +
@@ -81,7 +88,41 @@ plot_commits <- function(commits, repositories) {
         ) +
         ggplot2::theme_minimal() +
         ggplot2::theme(
+            plot.title = ggplot2::element_text(size = 20),
+            plot.subtitle = ggplot2::element_text(size = 16),
             axis.title = ggplot2::element_blank(),
             legend.position = "bottom"
         )
+}
+
+get_date <- function(frame_along, commits) {
+    the_date <- dplyr::if_else(frame_along > min(commits$When),
+                               frame_along, min(commits$When))
+    the_date <- dplyr::if_else(the_date < max(commits$When), the_date,
+                               max(commits$When))
+    return(the_date)
+}
+
+get_days <- function(the_date) {
+    lubridate::as.period(
+        lubridate::as_datetime(the_date) - lubridate::as_datetime("2016-02-08")
+    )@day
+}
+
+animate_commits <- function(commits_plot) {
+
+    subtitle <- paste(
+        "{sum(first_commits$When <= frame_along)} repositories with",
+        "{sum(commits$When <= frame_along)} commits in",
+        "{get_days(get_date(frame_along, commits))} days by",
+        "{as.Date(get_date(frame_along, commits))}"
+    )
+
+    commits_plot +
+        gganimate::transition_reveal(
+            When,
+            range = c(lubridate::as_datetime("2016-01-01"),
+                      lubridate::as_datetime("2020-01-31"))
+        ) +
+        labs(subtitle = subtitle)
 }
