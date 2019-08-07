@@ -1,5 +1,7 @@
 get_commits <- function(path, distinct = TRUE, filter = TRUE,
+                        users = c("l.zappia", "lazappi", "Luke Zappia"),
                         from = "2016-02-08") {
+
     dirs <- fs::dir_ls(path, type = "directory")
 
     message("Searching ", length(dirs), " directories...")
@@ -38,7 +40,7 @@ get_commits <- function(path, distinct = TRUE, filter = TRUE,
     if (filter) {
         message("Filtering names...")
         commits <- dplyr::filter(
-            commits, Name %in% c("l.zappia", "lazappi", "Luke Zappia")
+            commits, Name %in% users
         )
         message("Found ", nrow(commits), " commits by me")
     }
