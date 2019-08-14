@@ -9,12 +9,9 @@
 
 # Define the methods needed
 
-get_commits <- function(path, distinct = TRUE, filter = TRUE,
-                        # TODO: Change your username here (e.g., GitHub user)
-                        users = c("l.zappia", "lazappi", "Luke Zappia"),
-                        # TODO: Change date
-                        from = "2016-02-08") {
-
+# TODO: Change your username here (e.g., GitHub user)
+# TODO: Change date
+get_commits <- function(path, users, distinct = TRUE, filter = TRUE, from = "2016-02-08") {
     dirs <- fs::dir_ls(path, type = "directory")
 
     message("Searching ", length(dirs), " directories...")
@@ -61,12 +58,12 @@ get_commits <- function(path, distinct = TRUE, filter = TRUE,
     return(commits)
 }
 
+# TODO: Change the groups defined in your repositories.tsv file. Keep the order you want to see in the plot
+# TODO: Same than above
 plot_commits <- function(commits, repositories, label = FALSE,
-                         TODO: Change the groups defined in your repositories.tsv file. Keep the order you want to see in the plot
                          cat_levels = c("Tools", "Simulation", "ClustTrees",
                                         "Analysis", "Reports", "Other",
                                         "SideProject"),
-                         TODO: Same than above
                          cat_labels = c("Tools", "Simulation",
                                         "Clustering trees",
                                         "Analysis", "Reports", "Other",
