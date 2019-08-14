@@ -204,23 +204,33 @@ animate_commits <- function(commits_plot) {
 }
 
 
-#Get the commits of all the repositories located in this folder
+do_it <- function(repository_directory, info_path, output_path, users) {
+    #Get the commits of all the repositories located in this folder
 
-# TODO: Change the path to the directory where your repositories are located
-commits <- get_commits("/MY/PATH/")
+    message('Searching users: ', users)
+    # TODO: Change the path to the directory where your repositories are located
+    commits <- get_commits(path=repository_directory, users=users)
 
-# Load my repositories.tsv that define the groups
+    # Load my repositories.tsv that define the groups
 
-# TODO: Change the path to the file with grouping info as shown in the example
-repositories <- read.csv(file="/MY/PATH/repositories.tsv", header=TRUE, sep="\t")
+    # TODO: Change the path to the file with grouping info as shown in the example
+    repositories <- read.csv(file=info_path, header=TRUE, sep="\t")
 
-# Plot commits
-commits_plot <- plot_commits(commits, repositories)
+    # Plot commits
+    commits_plot <- plot_commits(commits, repositories)
 
-# Visualize the plot
-plot(commits_plot)
+    # Visualize the plot
+    plot(commits_plot)
 
-# Get the animated one
-animate_commits(commits_plot)
+    # Get the animated one
+    animate_commits(commits_plot)
 
-anim_save("commits.gif")
+    anim_save(output_path)
+}
+
+main <- function() {
+    args = commandArgs(trailingOnly=TRUE)
+    do_it(args[1], args[2], args[3], args[4:length(args)])
+}
+
+main()
